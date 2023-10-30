@@ -1,0 +1,111 @@
+import os
+
+class Note:
+    def __init__(self, title, text):
+        self.title = title
+        self.text = text
+
+    def __str__(self):
+        return f"{self.title}\n{self.text}\n"
+
+class NotesManager:
+    def __init__(self):
+        self.notes = []
+
+    def add_note(self, note):
+        self.notes.append(note)
+
+    def get_notes(self):
+        return self.notes
+
+    def update_note_title(self, old_title, new_title):
+        for note in self.notes:
+            if note.title == old_title:
+                note.title = new_title
+
+    def update_note_text(self, title, new_text):
+        for note in self.notes:
+            if note.title == title:
+                note.text = new_text
+
+    def delete_note_by_title(self, title):
+        for note in self.notes:
+            if note.title == title:
+                self.notes.remove(note)
+
+    def save_notes_to_file(self, file_path):
+        with open(file_path, "w") as f:
+            for note in self.notes:
+                f.write(str(note))
+
+    def load_notes_from_file(self, file_path):
+        if os.path.exists(file_path):
+            with open(file_path, "r") as f:
+                lines = f.readlines()
+                for i in range(0, len(lines), 2):
+                    title = lines[i].strip()
+                    text = lines[i+1].strip()
+                    self.notes.append(Note(title, text))
+
+notes_manager = NotesManager()
+
+while True:
+    print("1. Create a note")
+    print("2. Read notes")
+    print("3. Update a note title")
+    print("4. Update a note text")
+    print("5. Delete a note")
+    print("6. Save notes to file")
+    print("7. Load notes from file")
+    print("8. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        title = input("Enter note title: ")
+        text = input("Enter note text: ")
+        note = Note(title, text)
+        notes_manager.add_note(note)
+        print("Note created successfully!\n")
+
+    elif choice == "2":
+        notes = notes_manager.get_notes()
+        if notes:
+            for note in notes:
+                print(note)
+        else:
+            print("No notes found.\n")
+
+    elif choice == "3":
+        old_title = input("Enter note title to update: ")
+        new_title = input("Enter new title: ")
+        notes_manager.update_note_title(old_title, new_title)
+        print("Note title updated successfully!\n")
+
+    elif choice == "4":
+        title = input("Enter note title to update: ")
+        new_text = input("Enter new text: ")
+        notes_manager.update_note_text(title, new_text)
+        print("Note text updated successfully!\n")
+
+    elif choice == "5":
+        title = input("Enter note title to delete: ")
+        notes_manager.delete_note_by_title(title)
+        print("Note deleted successfully!\n")
+
+    elif choice == "6":
+        file_path = input("Enter file path to save notes: ")
+        notes_manager.save_notes_to_file(file_path)
+        print("Notes saved to file successfully!\n")
+
+    elif choice == "7":
+        file_path = input("Enter file path to load notes: ")
+        notes_manager.load_notes_from_file(file_path)
+        print("Notes loaded from file successfully!\n")
+
+    elif choice == "8":
+        print("Goodbye!")
+        break
+
+    else:
+        print("Invalid choice. Please try again.\n")
